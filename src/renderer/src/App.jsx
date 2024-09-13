@@ -1,15 +1,13 @@
 
-import Cadastro from "./components/Cadastro"
 import Modal from "./components/modal"
-import ListarProdutos from "./components/listar"
+import Cadastro from "./components/cadastro"
 function App() {
 
   return (
     <>
-    <div style={{display:'flex',justifyContent:'center', flexDirection:'column',alignItems:'center'}}>
+    <div style={{display:'flex',justifyContent:'start', flexDirection:'column',alignItems:'center'}}>
         <Modal></Modal>
         <Cadastro></Cadastro>
-        <ListarProdutos></ListarProdutos>
       </div>
     </>
   )

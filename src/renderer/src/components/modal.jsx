@@ -48,8 +48,10 @@ function Modal() {
   return (
     <>
 
+        <div id='abc'>
+
+        <img id='img' src={logo} onClick={() => setOptions(true)} alt="Logo"  />
       <div>
-        <img src={logo} onClick={() => setOptions(true)} alt="Logo" style={{ cursor:'pointer', width: '30px',  backgroundColor: 'white', padding: 3, borderRadius: 5, margin: 10 }} />
 
         {options && (
           <div className="modal-overlay">
@@ -63,36 +65,37 @@ function Modal() {
                 type="text"
                 value={credencial.host}
                 onChange={(e) => setCredencial({ ...credencial, host: e.target.value })}
-              />
+                />
               <p>User</p>
               <input
                 type="text"
                 value={credencial.user}
                 onChange={(e) => setCredencial({ ...credencial, user: e.target.value })}
-              />
+                />
               <p>Password</p>
               <input
                 type="password"
                 value={credencial.password}
                 onChange={(e) => setCredencial({ ...credencial, password: e.target.value })}
-              />
+                />
               <p>Port</p>
               <input
                 type="text"
                 value={credencial.port}
                 onChange={(e) => setCredencial({ ...credencial, port: e.target.value })}
-              />
+                />
               <p>Database</p>
               <input
                 type="text"
                 value={credencial.database}
                 onChange={(e) => setCredencial({ ...credencial, database: e.target.value })}
-              />
-              <button onClick={conectarBD}>SALVAR</button>
+                />
+              <button id='btn' onClick={conectarBD}>SALVAR</button>
               <p style={{color:'green',fontWeight:'bold'}}>{status}</p>
             </div>
           </div>
         )}
+        </div>
       </div>
     </>
   )

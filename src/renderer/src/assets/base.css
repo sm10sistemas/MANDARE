@@ -1,21 +1,16 @@
-
-
-
 *,
 *::before,
 *::after {
   box-sizing: border-box;
   margin: 0;
-  font-weight: normal;
 }
 
-ul {
-  list-style: none;
-}
+
 
 body {
   background: var(--color-background);
-  line-height: 1.6;  font-family:
+  line-height: 1.6;
+  font-family:
     Inter,
     -apple-system,
     BlinkMacSystemFont,
