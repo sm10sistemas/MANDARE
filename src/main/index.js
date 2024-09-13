@@ -90,7 +90,7 @@ app.whenReady().then(() => {
 
     try {
       const res = await client.query(queryText)
-      console.log(res.rows)
+      console.log('JOSIASAOR')
       return res.rows // Retorna o resultado das linhas
     } catch (err) {
       console.error('Erro ao executar query', err)

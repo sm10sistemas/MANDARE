@@ -25,7 +25,7 @@ function Cadastro() {
 
     // Função para carregar os produtos do banco de dados
     const carregarProdutos = useCallback(() => {
-        window.electron.ipcRenderer.invoke('execute-query', 'SELECT * FROM produtos ORDER BY data_criacao DESC')
+        window.electron.ipcRenderer.invoke('execute-query', 'SELECT * FROM produto')
             .then(setProdutos)
             .catch((err) => console.error('Erro ao carregar produtos:', err));
     }, []);
@@ -45,7 +45,7 @@ function Cadastro() {
     // Função para inserir um novo produto no banco de dados
     async function inserirProduto(produtoObj) {
         const query = `
-            INSERT INTO produtos (nome, ean, preco, ncm)
+            INSERT INTO produto (nome, ean, preco, ncm)
             VALUES ('${produtoObj.nome}', '${produtoObj.ean}', ${produtoObj.preco}, '${produtoObj.ncm}')
             RETURNING *;
         `;
@@ -60,9 +60,9 @@ function Cadastro() {
     // Função para atualizar um produto existente no banco de dados
     async function atualizarProduto(produtoObj) {
         const query = `
-            UPDATE produtos 
+            UPDATE produto
             SET nome='${produtoObj.nome}', ean='${produtoObj.ean}', preco=${produtoObj.preco}, ncm='${produtoObj.ncm}' 
-            WHERE codigo=${produtoObj.codigo};
+            WHERE codigo='${produtoObj.codigo}';
         `;
         try {
             const result = await window.electron.ipcRenderer.invoke('execute-query', query);
@@ -99,28 +99,30 @@ function Cadastro() {
                     <Input label="Descrição" name="nome" value={novoProduto.nome} onChange={handleInputChange} />
                     <Input label="NCM" name="ncm" value={novoProduto.ncm} onChange={handleInputChange} type="number" />
                     <Input label="Preço" name="preco" value={novoProduto.preco} onChange={handleInputChange} type="number" />
-                    <div style={{ display: 'flex', justifyContent: "center", paddingTop: 6, width: '5%' }}>
+                    <div id='mae' >
                         <button id="btn" onClick={salvarProduto}>{editandoProduto ? 'Atualizar' : 'Salvar'}</button>
                     </div>
                 </div>
             </div>
 
             {produtos.length > 0 && (
-                
-                <div  id='produtos' >
-                    <div style={{marginBottom:10,borderRadius:2}} id="header">
+
+                <div id='produtos' >
+                    <div style={{ marginBottom: 10, borderRadius: 2 }} id="header">
                         <span id="header-codigo">Código</span>
                         <span id="header-nome">Nome</span>
                         <span id="header-ean">EAN</span>
+                        <span id="header-ncm">NCM</span>
                         <span id="header-preco">Preço</span>
                         <span id="header-edit">Alterar</span>
                     </div>
-                    
+
                     {produtos.map((produto, index) => (
                         <div key={produto.codigo} className={`row ${index % 2 === 0 ? 'even' : 'odd'}`}>
                             <span id={`codigo-${produto.codigo}`}>{produto.codigo}</span>
                             <span id={`nome-${produto.codigo}`} className="nome">{produto.nome}</span>
                             <span id={`ean-${produto.codigo}`} className="ean">{produto.ean}</span>
+                            <span id={`ncm-${produto.codigo}`} className="ncm">{produto.ncm}</span>
                             <span id={`preco-${produto.codigo}`} className="preco">{produto.preco}</span>
                             <button id="btn-edit" onClick={() => iniciarEdicao(produto)}>Alterar</button>
                         </div>
