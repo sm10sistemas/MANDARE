@@ -6,7 +6,6 @@ function App() {
   return (
     <>
     <div style={{display:'flex',justifyContent:'start', flexDirection:'column',alignItems:'center'}}>
-        <Modal></Modal>
         <Cadastro></Cadastro>
       </div>
     </>

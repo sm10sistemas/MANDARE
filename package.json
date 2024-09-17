@@ -20,7 +20,8 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
-    "pg": "^8.12.0"
+    "pg": "^8.12.0",
+    "react-infinite-scroll-component": "^6.1.0"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^1.0.2",
@@ -37,28 +38,28 @@
     "vite": "^5.3.1"
   },
   "build": {
-    "appId": "com.example.myapp",       
-    "productName": "My App",           
+    "appId": "com.example.myapp",
+    "productName": "My App",
     "directories": {
-      "output": "dist",                  
-      "buildResources": "build"          
+      "output": "dist",
+      "buildResources": "build"
     },
     "files": [
-      "dist/**/*",                       
+      "dist/**/*",
       "out/**/*",
       "node_modules/**/*"
     ],
     "win": {
-      "target": "nsis",                  
-      "icon": "build/icon.ico"          
+      "target": "nsis",
+      "icon": "build/icon.ico"
     },
     "mac": {
       "target": "dmg",
-      "icon": "build/icon.icns"          
+      "icon": "build/icon.icns"
     },
     "linux": {
       "target": "AppImage",
-      "icon": "build"                    
+      "icon": "build"
     }
   }
 }

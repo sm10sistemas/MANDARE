@@ -1,150 +1,164 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import Modal from './modal';
 import './modal.css';
-import logo from '../assets/logo.png';
+import loadingGif from './rick.gif'; // Caminho para o GIF de carregamento
+import edit from '../assets/lapis.png';
 
 function Cadastro() {
-    const [produtos, setProdutos] = useState([]);
-    const [novoProduto, setNovoProduto] = useState(inicializarProduto());
-    const [editandoProduto, setEditandoProduto] = useState(null);
-    const eanInputRef = useRef(null);
+    const [conectado, setConectado] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [listaProduto, setListaProduto] = useState([]);
+    const [produtoEditado, setProdutoEditado] = useState(null); // Estado para armazenar o produto que está sendo editado
 
-    // Inicializa um novo produto vazio
-    function inicializarProduto() {
-        return {
-            nome: '',
-            ean: '',
-            ncm: '',
-            preco: '',
-        };
-    }
-
-    // Carrega os produtos na montagem do componente
-    useEffect(() => {
-        carregarProdutos();
-    }, []);
-
-    // Função para carregar os produtos do banco de dados
     const carregarProdutos = useCallback(() => {
-        window.electron.ipcRenderer.invoke('execute-query', 'SELECT * FROM produto')
-            .then(setProdutos)
-            .catch((err) => console.error('Erro ao carregar produtos:', err));
+        setLoading(true);
+
+        window.electron.ipcRenderer.invoke('execute-query', 'SELECT * FROM produto LIMIT 50')
+            .then((result) => {
+                setListaProduto(result);
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.error('Erro ao carregar produtos:', err);
+                setLoading(false);
+            });
+    }, []);
+    const salvarEdicao = useCallback(() => {
+        const updateQuery = `
+        UPDATE produto
+        SET nome = '${produtoEditado.nome}', ean = '${produtoEditado.ean}', ncm = '${produtoEditado.ncm}', preco = '${produtoEditado.preco}'
+        WHERE codigo = '${produtoEditado.codigo}';
+    `;
+    
+        window.electron.ipcRenderer.invoke('execute-query', updateQuery)
+            .then((result) => {
+                   setProdutoEditado(null) 
+                   console.log(result)
+            })
+            .catch((err) => {
+                console.error('Erro ao carregar produtos:', err);
+            });
     }, []);
 
-    // Função para gravar ou atualizar o produto
-    const salvarProduto = useCallback(async () => {
-        if (editandoProduto) {
-            await atualizarProduto(novoProduto);
-        } else {
-            await inserirProduto(novoProduto);
-        }
-        setNovoProduto(inicializarProduto());
-        setEditandoProduto(null);
-        carregarProdutos();
-    }, [novoProduto, editandoProduto, carregarProdutos]);
-
-    // Função para inserir um novo produto no banco de dados
-    async function inserirProduto(produtoObj) {
-        const query = `
-            INSERT INTO produto (nome, ean, preco, ncm)
-            VALUES ('${produtoObj.nome}', '${produtoObj.ean}', ${produtoObj.preco}, '${produtoObj.ncm}')
-            RETURNING *;
-        `;
+    const verificarConexao = async () => {
         try {
-            const result = await window.electron.ipcRenderer.invoke('execute-query', query);
-            console.log('Produto inserido com sucesso:', result);
-        } catch (err) {
-            console.error('Erro ao inserir produto:', err);
+            const result = await window.electron.ipcRenderer.invoke('conectado');
+            setConectado(result);
+        } catch (error) {
+            console.error('Erro ao verificar conexão:', error);
         }
-    }
+    };
+    
 
-    // Função para atualizar um produto existente no banco de dados
-    async function atualizarProduto(produtoObj) {
-        const query = `
-            UPDATE produto
-            SET nome='${produtoObj.nome}', ean='${produtoObj.ean}', preco=${produtoObj.preco}, ncm='${produtoObj.ncm}' 
-            WHERE codigo='${produtoObj.codigo}';
-        `;
-        try {
-            const result = await window.electron.ipcRenderer.invoke('execute-query', query);
-            console.log('Produto atualizado com sucesso:', result);
-        } catch (err) {
-            console.error('Erro ao atualizar produto:', err);
-        }
-    }
+    const editarProduto = (produto) => {
+        setProdutoEditado(produto);
+    };
 
-    // Função para configurar o produto a ser editado
-    function iniciarEdicao(produto) {
-        setNovoProduto(produto);
-        setEditandoProduto(produto.codigo);
-    }
 
-    // Efeito para focar o campo EAN quando um produto está sendo editado
-    useEffect(() => {
-        if (editandoProduto !== null && eanInputRef.current) {
-            eanInputRef.current.focus();
-        }
-    }, [editandoProduto]);
-
-    // Função para manipular as mudanças nos campos do formulário
-    function handleInputChange(event) {
-        const { name, value } = event.target;
-        setNovoProduto((prevState) => ({ ...prevState, [name]: value }));
-    }
 
     return (
         <>
-            <div id="main">
-                <div id="list">
-                    <Input label="Código de Barras" name="ean" value={novoProduto.ean} onChange={handleInputChange} ref={eanInputRef} />
-                    <Input label="Descrição" name="nome" value={novoProduto.nome} onChange={handleInputChange} />
-                    <Input label="NCM" name="ncm" value={novoProduto.ncm} onChange={handleInputChange} type="number" />
-                    <Input label="Preço" name="preco" value={novoProduto.preco} onChange={handleInputChange} type="number" />
-                    <div id='mae' >
-                        <button id="btn" onClick={salvarProduto}>{editandoProduto ? 'Atualizar' : 'Salvar'}</button>
+            {loading && (
+                <div className="loading-overlay">
+                    <img src={loadingGif} alt="Loading..." className="loading-gif" />
+                </div>
+            )}
+
+            <Modal funcao1={verificarConexao} funcao2={carregarProdutos} />
+
+            {conectado && (
+                <div className="container_inputs">
+                    <div id="entrada">
+                        <p>Código de barras</p>
+                        <input type="text" onChange={(e) => setProdutoEditado({ ...produtoEditado, ean: e.target.value })} />
+                    </div>
+                    <div id="entrada">
+                        <p>Nome</p>
+                        <input type="text" onChange={(e) => setProdutoEditado({ ...produtoEditado, nome: e.target.value })} />
+                    </div>
+                    <div id="entrada">
+                        <p>NCM</p>
+                        <input type="text" onChange={(e) => setProdutoEditado({ ...produtoEditado, ncm: e.target.value })} />
+                    </div>
+                    <div id="entrada">
+                        <p>Preço</p>
+                        <input type="text" onChange={(e) => setProdutoEditado({ ...produtoEditado, preco: e.target.value })} />
                     </div>
                 </div>
-            </div>
+            )}
 
-            {produtos.length > 0 && (
-
-                <div id='produtos' >
-                    <div style={{ marginBottom: 10, borderRadius: 2 }} id="header">
-                        <span id="header-codigo">Código</span>
-                        <span id="header-nome">Nome</span>
-                        <span id="header-ean">EAN</span>
-                        <span id="header-ncm">NCM</span>
-                        <span id="header-preco">Preço</span>
-                        <span id="header-edit">Alterar</span>
-                    </div>
-
-                    {produtos.map((produto, index) => (
-                        <div key={produto.codigo} className={`row ${index % 2 === 0 ? 'even' : 'odd'}`}>
-                            <span id={`codigo-${produto.codigo}`}>{produto.codigo}</span>
-                            <span id={`nome-${produto.codigo}`} className="nome">{produto.nome}</span>
-                            <span id={`ean-${produto.codigo}`} className="ean">{produto.ean}</span>
-                            <span id={`ncm-${produto.codigo}`} className="ncm">{produto.ncm}</span>
-                            <span id={`preco-${produto.codigo}`} className="preco">{produto.preco}</span>
-                            <button id="btn-edit" onClick={() => iniciarEdicao(produto)}>Alterar</button>
+            {listaProduto.length > 0 && (
+                <div className="containerLista">
+                    <div className="planilha">
+                        <div className="planilha-header">
+                            <p>Código</p>
+                            <p>Nome</p>
+                            <p>EAN</p>
+                            <p>NCM</p>
+                            <p>Preço</p>
+                            <p>Edit</p>
                         </div>
-                    ))}
+                        <div className="listaProdutos">
+                            {listaProduto.map((produto) => (
+                                <div className="planilha-row" key={produto.codigo}>
+                                    {produtoEditado && produtoEditado.codigo === produto.codigo ? (
+                                        <>
+                                            <input
+                                                type="text"
+                                                name="codigo"
+                                                value={produtoEditado.codigo}
+                                                onChange={(e) => setProdutoEditado({ ...produtoEditado, codigo: e.target.value })}
+                                                disabled
+                                            />
+                                            <input
+                                                type="text"
+                                                name="nome"
+                                                value={produtoEditado.nome}
+                                                onChange={(e) => setProdutoEditado({ ...produtoEditado, nome: e.target.value })}
+                                            />
+                                            <input
+                                                type="text"
+                                                name="ean"
+                                                value={produtoEditado.ean}
+                                                onChange={(e) => setProdutoEditado({ ...produtoEditado, ean: e.target.value })}
+                                            />
+                                            <input
+                                                type="text"
+                                                name="ncm"
+                                                value={produtoEditado.ncm}
+                                                onChange={(e) => setProdutoEditado({ ...produtoEditado, ncm: e.target.value })}
+                                            />
+                                            <input
+                                                type="text"
+                                                name="preco"
+                                                value={produtoEditado.preco}
+                                                onChange={(e) => setProdutoEditado({ ...produtoEditado, preco: e.target.value })}
+                                            />
+                                            <button onClick={salvarEdicao}>Salvar</button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <p>{produto.codigo}</p>
+                                            <p>{produto.nome}</p>
+                                            <p>{produto.ean}</p>
+                                            <p>{produto.ncm}</p>
+                                            <p>{produto.preco}</p>
+                                            <img
+                                                id="img2"
+                                                src={edit}
+                                                onClick={() => editarProduto(produto)}
+                                                alt="Editar Produto"
+                                            />
+                                        </>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             )}
         </>
     );
 }
-
-// Componente reutilizável para entrada de dados
-const Input = ({ label, name, value, onChange, type = "text", ref }) => (
-    <div style={{ width: type === 'number' ? '10%' : '30%' }}>
-        <p>{label}:</p>
-        <input
-            name={name}
-            type={type}
-            value={value}
-            onChange={onChange}
-            ref={ref}
-        />
-    </div>
-);
 
 export default Cadastro;

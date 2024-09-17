@@ -5,7 +5,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.6); /* Mais opaco para foco no modal */
+  background: rgba(0, 0, 0, 0.4); /* Fundo escuro suave */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -15,225 +15,195 @@
 .modal-content {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  background: #f7f9fc; /* Cor de fundo mais suave e clara */
+  background: #ffffff;
   padding: 20px;
-  border-radius: 12px;
-  width: 400px;
+  width: 300px;
   position: relative;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Sombra mais suave e acentuada */
-  background-color: #ffffff
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra leve */
+  border-radius: 6px;
+  font-size: 14px;
 }
 
-/* Botão para fechar o modal */
 .close-button {
   position: absolute;
-  top: 10px;
+  top: 5px;
   right: 10px;
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: 20px;
+  color: #333;
   cursor: pointer;
-  background-color: #e74c3c; /* Vermelho mais suave */
-  color: white;
-  padding: 4px 8px;
 }
 
-/* Estilo dos inputs */
 input {
-  text-align: center;
   width: 100%;
-  padding: 3px;
-  margin-bottom: 10px;
-  border: 1px solid #000000; /* Azul claro para borda */
-  background-color: #ecf0f1; /* Fundo claro para os inputs */
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Sombra interna sutil */
+  padding: 6px;
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f7f7f7;
+  font-size: 13px;
 }
 
-#main {
+button#btn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+button#btn:hover {
+  background-color: #2980b9;
+}
+
+#abc {
   display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+#img {
+  width: 25px;
+  cursor: pointer;
+}
+#img2 {
+  width: 20px;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 2px;
+  background-color: #008eec;
+}
+#img2:hover {
+  width: 20px;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 2px;
+  background-color: #00ec27;
+}
+
+/* Loading overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.7); /* Fundo semi-transparente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loading-gif {
+  width: 60px; /* Tamanho ajustado para o GIF de carregamento */
+}
+/* Estilos para o container de entradas */
+/* Estilos para o container de entradas */
+.container_inputs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#entrada {
+  display: flex;
+  flex-direction: column;
+}
+
+#entrada p {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+#entrada input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Estilos para o overlay de carregamento */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-gif {
+  width: 100px;
+  height: 100px;
+}
+
+/* Estilos da planilha */
+.containerLista {
+  margin-top: 20px;
+  display: flex;
+  width: 88%;
   justify-content: center;
   flex-direction: column;
-  background-color: #3686c7; /* Cinza suave */
-  padding: 10px;
-  width: 90%;
-  border: solid black 1px;
-  margin-right: 5px;
-  margin-top: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
 }
 
-p {
-  font-weight: 500;
-  font-size: 12px;
-  color: #000000; /* Cinza escuro para maior contraste */
-}
-
-#list {
-  display: flex;
+.planilha {
   width: 100%;
-  justify-content: space-around;
-}
-#mae{
-  width:11%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#btn {
-  background-color: #2980b9; /* Azul escuro */
-  color: white;
-  border: solid black 1px;
-  margin-top: 10px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-#btn:hover {
-  background-color: #a80637; /* Efeito de hover mais escuro */
-}
-
-/* Header e linhas da planilha */
-/* Header e linhas da planilha */
-#header {
-  display: grid;
-  grid-template-columns: 1fr 3fr 2fr 1fr 1fr 1fr; /* Inclui a coluna de edição */
-  background-color: #3498db; /* Azul vivo */
-  color: rgb(0, 0, 0);
-  font-weight: bold;
-  text-align: center;
-}
-
-.row {
-  display: grid;
-  grid-template-columns: 1fr 3fr 2fr 1fr 1fr 1fr; /* Inclui a coluna de edição */
-  border-bottom: 1px solid #ecf0f1;
-}
-
-#header span,
-.row span {
-  border: 1px solid #352424;
-  text-align: center;
-  font-size: 13px; /* Tamanho de texto menor */
-  font-weight: 500;
-}
-
-/* Alternando cores entre linhas */
-.even {
-  background-color: #cfd0d1; /* Cor clara para linhas pares */
-  color: rgb(0, 0, 0);
-  font-weight: 400;
-}
-
-.odd {
-  background-color: #4893f7; /* Cor mais escura para linhas ímpares */
-  color: rgb(0, 0, 0);
-  font-weight: 500;
-}
-
-/* Scroll container */
-div[style*="overflow-y: scroll"] {
-  border: 1px solid #bdc3c7;
-  padding: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-height: 700px;
-  overflow-y: auto;
-  margin-top: 30PX;
-  text-align: center;
-}
-
-/* Botão para editar produto */
-#btn-edit {
-  
-  background-color: #075af5; /* Vermelho vivo */
-  color: white;
-  border: solid 1px rgb(0, 0, 0);
-  cursor: pointer;
-  transition: background-color 0.3s;
-  font-size: 14px; /* Fonte menor */
-}
-
-#btn-edit:hover {
-  background-color: #377a11; /* Efeito de hover */
-}
-
-/* Botão de salvar e atualizar */
-#btn {
-  background-color: #084bdd; /* Azul escuro */
-  color: white;
-  height: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 10px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-#btn:hover {
-  background-color: #048d04; /* Efeito de hover */
-}
-
-#img{
-  width: 25px;
-  padding: 3px;
-  border-radius: 2px;
-  color: white;
-  cursor: pointer;
-  transition: 0.1s;
-}
-#img:hover{
-  width: 25px;
-  padding: 3px;
-  border-radius: 2px;
-  color: rgb(148, 17, 17);
-  cursor: pointer;
-  background-color: rgb(24, 38, 226);
-}
-#abc{
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
-  width: 100%;
-}
-#produtos {
+  border-collapse: collapse;
   margin-top: 20px;
-  width: 90%;
-  max-height: 600px;
-  overflow-y: scroll;
-  padding-right: 10px; /* Adiciona espaço para evitar sobreposição */
-  scroll-behavior: smooth; /* Rolagem suave */
 }
 
-/* Estiliza a barra de rolagem */
-#produtos::-webkit-scrollbar {
-  width: 8px; /* Largura da barra de rolagem */
+.planilha-header {
+  display: grid;
+  text-align: center;
+  grid-template-columns: 1fr 2fr 1fr 1fr 1fr 0.2fr;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px;
+  font-weight: bold;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
-/* Estiliza o fundo da barra de rolagem */
-#produtos::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Cor de fundo da barra */
-  border-radius: 10px;
+.listaProdutos {
+  text-align: center;
+  align-items: center;
+  max-height: 600px; /* Altura máxima da listagem com scroll */
+  overflow-y: auto;  /* Adiciona o scroll vertical */
+  border: 1px solid #ddd;
+  text-align: center;
 }
 
-/* Estiliza a "thumb", a parte que se move na barra de rolagem */
-#produtos::-webkit-scrollbar-thumb {
-  background-color: #888; /* Cor da barra de rolagem */
-  border-radius: 10px;
-  border: 2px solid transparent; /* Espaçamento interno */
-  background-clip: padding-box;
+.planilha-row {
+  text-align: center;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr 1fr 1fr 0.1fr;
+  border-bottom: 1px solid #ddd;
 }
 
-/* Efeito ao passar o mouse sobre a barra */
-#produtos::-webkit-scrollbar-thumb:hover {
-  background-color: #555; /* Cor ao passar o mouse */
+.planilha-row p {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  text-align: left;
+  border-left: solid 1px #ddd;
+
 }
 
-/* Estiliza a rolagem horizontal (caso seja necessário) */
-#produtos::-webkit-scrollbar-horizontal {
-  height: 8px;
+.planilha-row:hover {
+  background-color: #f1f1f1;
+}
+
+/* Estilos gerais */
+p {
+  margin: 0;
+  font-size: 13px;
 }
